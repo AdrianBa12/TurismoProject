@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const YOUR_DOMAIN = "http://localhost:3000";
+const YOUR_DOMAIN = "https://turismoproject.onrender.com";
 
 app.post("/checkout", async (req, res) => {
   const items = req.body.items.map((item) => {
