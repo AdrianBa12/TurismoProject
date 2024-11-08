@@ -3,10 +3,9 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const stripe = require("stripe")(
-  "sk_test_51OqTwwJ5bCJjLaWJ2maitwEt6xrNDJefHFWiTMEvya4M4kSWPkXwkxR1H1zw8iCefeezKgkHeu9dm9n8ZgPEvexD00WEkNvagk"
-);
-
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
 const app = express();
 const corsOptions = {
   origin: "https://turismoimperial.netlify.app",
@@ -41,7 +40,10 @@ io.on("connection", (socket) => {
       seatOwners[seat] = socket.id;
       io.emit("seatSelected", seat);
     } else {
-      socket.emit("seatOccupied", seat);
+      socket.emit("seatOccupied", {
+        seat,
+        message: "Este asiento ya ha sido seleccionado.",
+      });
     }
   });
 
@@ -65,9 +67,15 @@ io.on("connection", (socket) => {
       }
     });
   });
+  socket.on("connect_error", (err) => {
+    console.log("Error de conexión:", err);
+  });
 });
 
-const YOUR_DOMAIN = "https://turismoproject.onrender.com";
+const YOUR_DOMAIN =
+  process.env.NODE_ENV === "production"
+    ? "https://turismoproject.onrender.com"
+    : "http://localhost:3000";
 
 app.post("/checkout", async (req, res) => {
   const items = req.body.items.map((item) => {
@@ -91,11 +99,13 @@ app.post("/checkout", async (req, res) => {
       success_url: `${YOUR_DOMAIN}/success.html`,
       cancel_url: `${YOUR_DOMAIN}/cancel.html`,
     });
-
     res.status(200).json(session);
   } catch (error) {
     console.error("Error al crear sesión de pago:", error);
-    res.status(500).send("Error al crear sesión de pago");
+    res.status(500).send({
+      error:
+        "Ocurrió un error al procesar tu pago. Intenta nuevamente más tarde o contacta con soporte.",
+    });
   }
 });
 
@@ -120,16 +130,21 @@ async function getInvoicePDF(invoiceId) {
     if (invoice && invoice.invoice_pdf) {
       return invoice.invoice_pdf;
     } else {
-      throw new Error("No invoice PDF available for this transaction.");
+      res.redirect("/support");
     }
   } catch (error) {
     console.error("Error retrieving invoice:", error);
+    res.redirect("/support");
   }
 }
-app.get("/purchase-completed", (req, res) => {
-  const invoicePDFLink =
-    "https://invoice.stripe.com/i/acct_1OqTwwJ5bCJjLaWJ/test_YWNjdF8xT3FUd3dKNWJDSmpMYVdKLF9SQXBiM3dpOXozUkNNdjhlYmROZTQzY25ZVkJHbEJMLDEyMTUyMTM2NQ0200ZPJBWyWd?s=db";
-  res.render("purchase-completed", { invoicePDFLink });
+app.get("/purchase-completed", async (req, res) => {
+  try {
+    const invoicePDFLink = await getInvoicePDF(req.query.invoiceId);
+    res.render("purchase-completed", { invoicePDFLink });
+  } catch (error) {
+    console.error("Error al obtener el PDF de la factura:", error);
+    res.status(500).send("Error al obtener el PDF de la factura.");
+  }
 });
 
 async function sendInvoice(invoiceId) {
@@ -141,19 +156,36 @@ async function sendInvoice(invoiceId) {
   }
 }
 
-app.post("/webhook", express.json(), async (req, res) => {
-  const event = req.body;
+app.post("/webhook", express.json(), (req, res) => {
+  const sig = req.headers["stripe-signature"];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error("Webhook error:", err.message);
+    return res.status(400).send(`Webhook error: ${err.message}`);
+  }
+  if (event.type === "invoice.payment_failed") {
+    const invoiceId = event.data.object.id;
+    console.log(`El pago ha fallado para la factura: ${invoiceId}`);
+  }
 
   if (event.type === "invoice.payment_succeeded") {
     const invoiceId = event.data.object.id;
-
-    await sendInvoice(invoiceId);
+    sendInvoice(invoiceId);
+  } else if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+    console.log("Pago completado para la sesión:", session);
+  } else {
+    console.log(`Evento no manejado: ${event.type}`);
   }
 
-  res.json({ received: true });
+  res.status(200).send("Evento recibido");
 });
 
-// Inicia el servidor en un solo puerto (3000 por defecto)
+// inicia en el puerto 3000
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
