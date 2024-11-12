@@ -7,6 +7,15 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
 const app = express();
+
+app.use(
+  cors({
+    origin: "https://turismoimperial.netlify.app", // Origen permitido
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // Permite enviar cookies y encabezados de autenticación
+  })
+);
+
 const corsOptions = {
   origin: "https://turismoimperial.netlify.app",
   methods: ["GET", "POST"],
@@ -19,10 +28,18 @@ app.use(bodyParser.json());
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
+// const io = new Server(server, {
+//   cors: {
+//     origin: "https://turismoimperial.netlify.app",
+//     methods: ["GET", "POST"],
+//   },
+// });
+
+const io = require("socket.io")(server, {
   cors: {
     origin: "https://turismoimperial.netlify.app",
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -185,8 +202,8 @@ app.post("/webhook", express.json(), (req, res) => {
   res.status(200).send("Evento recibido");
 });
 
-// inicia en el puerto 3000
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+// // inicia en el puerto 3000
+// const PORT = process.env.PORT || 3000;
+// server.listen(PORT, () => {
+//   console.log(`Servidor escuchando en http://localhost:${PORT}`);
+// });
