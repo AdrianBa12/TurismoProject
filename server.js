@@ -202,8 +202,8 @@ app.post("/webhook", express.json(), (req, res) => {
   res.status(200).send("Evento recibido");
 });
 
-// // inicia en el puerto 3000
-// const PORT = process.env.PORT || 3000;
-// server.listen(PORT, () => {
-//   console.log(`Servidor escuchando en http://localhost:${PORT}`);
-// });
+// inicia en el puerto 3000
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
+});
