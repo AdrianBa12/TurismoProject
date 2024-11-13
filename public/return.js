@@ -7,13 +7,8 @@ async function initialize() {
   const response = await fetch(`/session-status?session_id=${sessionId}`);
   const session = await response.json();
 
-  const baseUrl =
-    process.env.NODE_ENV === "production"
-      ? "https://turismoproject.onrender.com"
-      : "http://localhost:3000";
-
   if (session.status == "open") {
-    window.location.replace(`${baseUrl}/checkout.html`);
+    window.replace("http://localhost:4242/checkout.html");
   } else if (session.status == "complete") {
     document.getElementById("success").classList.remove("hidden");
     document.getElementById("customer-email").textContent =

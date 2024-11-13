@@ -1,8 +1,70 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Thanks for your order!</title>
+    <title>Confirmación de Compra</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .details {
+        margin: 20px 0;
+        text-align: left;
+      }
+
+      .details h3 {
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      .details p {
+        color: #777;
+        line-height: 1.6;
+        margin: 4px 0;
+      }
+
+      .button-container {
+        margin-top: 20px;
+      }
+
+      .back-button {
+        display: inline-block;
+        padding: 12px 20px;
+        font-size: 16px;
+        color: #ffffff;
+        background-color: #bf303c;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: #550f15;
+      }
+    </style>
   </head>
   <body>
     <section>
@@ -12,119 +74,33 @@
         <a href="mailto:turismoimperial@gmail.com">turismoimperial@gmail.com</a
         >.
       </p>
+      <div class="container">
+        <h1>Compra Confirmada</h1>
+        <p>
+          ¡Gracias por tu compra! A continuación, te mostramos el detalle de la
+          compra realizada.
+        </p>
 
-      <div
-        class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6"
-      >
-        <!-- Card Container -->
-        <div
-          class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full text-center"
-        >
-          <!-- Success Icon -->
-          <div class="flex items-center justify-center mb-6">
-            <div
-              class="w-16 h-16 flex items-center justify-center bg-green-100 rounded-full"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8 text-green-500"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-10.707a1 1 0 00-1.414 0L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 000-1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-          </div>
+        <div class="details">
+          <h3>Detalles de Asientos:</h3>
+          <p>Asiento 1: Piso 1, Número 5</p>
+          <p>Asiento 2: Piso 1, Número 6</p>
 
-          <!-- Title -->
-          <h1
-            class="text-2xl uppercase text-[#BF303C]font-semibold text-gray-800 mb-2"
+          <h3>Datos de Pasajeros:</h3>
+          <p>Pasajero 1: Juan Pérez</p>
+          <p>Pasajero 2: María López</p>
+
+          <h3>Datos de Compra:</h3>
+          <p>Total: $70.00</p>
+          <p>Fecha de compra: 12 de noviembre de 2024</p>
+        </div>
+
+        <div class="button-container">
+          <a href="http://localhost:4200/#/" class="back-button"
+            >Volver al inicio</a
           >
-            Compra Completada
-          </h1>
-          <p class="text-gray-600 mb-6">
-            ¡Gracias por tu compra! Puedes descargar tu factura o volver al
-            inicio.
-          </p>
-
-          <!-- Buttons -->
-          <div
-            class="space-y-4 sm:space-y-0 sm:flex sm:justify-center sm:space-x-4"
-          >
-            <!-- <button
-              onclick="window.location.href='<%= invoicePDFLink %>'"
-              class="px-6 py-2 w-full sm:w-auto bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Descargar Factura
-            </button> -->
-
-            <button
-              class="px-6 py-2 w-full sm:w-auto bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
-            >
-              Volver al Inicio
-            </button>
-          </div>
         </div>
       </div>
     </section>
-    <div
-      class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6"
-    >
-      <!-- Card Container -->
-      <div
-        class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full text-center"
-      >
-        <!-- Success Icon -->
-        <div class="flex items-center justify-center mb-6">
-          <div
-            class="w-16 h-16 flex items-center justify-center bg-green-100 rounded-full"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-green-500"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-10.707a1 1 0 00-1.414 0L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 000-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </div>
-        </div>
-
-        <!-- Title -->
-        <h2 class="text-2xl font-semibold text-gray-800 mb-2">
-          Compra Completada
-        </h2>
-        <p class="text-gray-600 mb-6">
-          ¡Gracias por tu compra! Puedes descargar tu factura o volver al
-          inicio.
-        </p>
-
-        <!-- Buttons -->
-        <div
-          class="space-y-4 sm:space-y-0 sm:flex sm:justify-center sm:space-x-4"
-        >
-          <button
-            onclick="window.location.href='<%= invoicePDFLink %>'"
-            class="px-6 py-2 w-full sm:w-auto bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Descargar Factura
-          </button>
-
-          <button
-            class="px-6 py-2 w-full sm:w-auto bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
-          >
-            Volver al Inicio
-          </button>
-        </div>
-      </div>
-    </div>
   </body>
 </html>
